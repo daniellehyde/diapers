@@ -1,45 +1,21 @@
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
 import './App.css'
 import diaperSizesKg from './diaperSizesKg.json'
 import diaperSizesLb from './diaperSizesLb.json'
+import Results from './Results.jsx'
 
 
 function age(birthday, measurementDate) {
-  return Math.round((new Date(measurementDate) - new Date(birthday))/8.64e+7/30)
-}
-function findSize(weight, weightUnits) {
-  const sizesThatFit = [];
-  if (weightUnits === "kg") {
-  diaperSizesKg.forEach((diaperSize) => {
-    if (diaperSize.minWeight <= weight && weight < diaperSize.maxWeight) {
-      sizesThatFit.push(diaperSize)
-    }
-  })}
-  else {
-    diaperSizesLb.forEach((diaperSize) => {
-      if (diaperSize.minWeight <= weight && weight <= diaperSize.maxWeight) {
-        sizesThatFit.push(diaperSize)
-      }
-  })}
-  return sizesThatFit;
+  return Math.round((new Date(measurementDate) - new Date(birthday)) / 8.64e+7 / 30)
 }
 
 function App() {
   const [birthday, setBirthday] = useState('');
   const [sex, setSex] = useState('male');
   const [measurementDate, setMeasurementDate] = useState('');
-  const [weight, setWeight] = useState('');
+  const [inputtedWeight, setWeight] = useState('');
   const [weightUnits, setWeightUnits] = useState('kg');
-
-  // {brand: Pamper, ...}
-  // 
-  const diaperSizeList = findSize(weight, weightUnits).map((diaperSize) => {
-    return (
-      <li>{diaperSize.brand} {diaperSize.size}</li>
-    )
-  });
+  const ageInMonths = age(birthday, measurementDate);
 
   return (
     <>
@@ -67,7 +43,7 @@ function App() {
         </select>
 
         <label for="measurementDate">Measurement Date:</label>
-        <input 
+        <input
           type="date"
           name="measurementDate"
           id="measurementDate"
@@ -85,7 +61,7 @@ function App() {
           name="weight"
           id="weight"
           placeholder="Weight"
-          value={weight}
+          value={inputtedWeight}
           onChange={e => setWeight(e.target.value)}
         >
         </input>
@@ -100,17 +76,10 @@ function App() {
         </select>
       </div>
       <p>
-        {birthday}<br></br>
-        {sex}<br></br>
-        {measurementDate}<br></br>
-        {weight}{weightUnits}<br></br>
-        {age(birthday, measurementDate)} months
+        <Results age={ageInMonths} sex={sex} inputtedWeight={inputtedWeight} weightUnits={weightUnits}>
+        
+        </Results>
       </p>
-
-      <p>
-        {diaperSizeList}
-      </p>
-
     </>
   )
 }
