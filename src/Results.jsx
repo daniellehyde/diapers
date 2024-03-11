@@ -23,16 +23,16 @@ function findSize(weight, weightUnits) {
 
 
 function Results(props) {
-    const {age, sex, inputtedWeight, weightUnits} = props
+    const { age, sex, inputtedWeight, weightUnits, measurementDate } = props
 
     function futureDiapers(monthsInFuture) {
         const percentile = percentileCalc(sex, age, inputtedWeight)
         const futureWeight = weightCalc(sex, percentile, age + monthsInFuture)
 
         return {
-            date: measurementDate + monthsInFuture,
+            date: new Date((monthsInFuture * 30 * 8.64e+7) + new Date(measurementDate).getTime()).toDateString(),
             ageInMonths: age + monthsInFuture,
-            weight: futureWeight,
+            weight: (futureWeight).toFixed(1),
             diaperSizes: findSize(futureWeight, weightUnits)
         }
     }
@@ -41,23 +41,39 @@ function Results(props) {
         return <></>
     }
 
-    const diapersResults = futureDiapers(6)
+    const allTheResults = [
+            futureDiapers(0), futureDiapers(1), futureDiapers(2), futureDiapers(3), futureDiapers(4), 
+            futureDiapers(5), futureDiapers(6)
+        ]
 
-    const diaperSizeList = diapersResults.diaperSizes.map((diaperSize) => {
+    const diaperTableRows = allTheResults.map((diapersResults) => {
+        const diaperSizeList = diapersResults.diaperSizes.map((diaperSize) => {
+            return (
+                <li>{diaperSize.brand} {diaperSize.size}</li>
+            )
+        });
+
         return (
-          <li>{diaperSize.brand} {diaperSize.size}</li>
+            <tr>
+                <td>{diapersResults.date}</td>
+                <td>{diapersResults.ageInMonths}</td>
+                <td>{diapersResults.weight}</td>
+                <td>{diaperSizeList}</td>
+            </tr>
         )
-      });
+    });
 
     return (
         <>
-            <p>
-                {diaperSizeList}
-            </p>
-
-            <p>
-                {diapersResults.weight}
-            </p>
+            <table>
+                <tr>
+                    <th>Date</th>
+                    <th>Month</th>
+                    <th>Weight</th>
+                    <th>Diapers</th>
+                </tr>
+                {diaperTableRows}
+            </table>
         </>
     )
 

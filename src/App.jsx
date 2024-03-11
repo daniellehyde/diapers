@@ -19,7 +19,7 @@ function App() {
 
   return (
     <>
-      <div className="card">
+      <form>
         <label for="birthday">Birthday:</label>
         <input
           type="date"
@@ -74,9 +74,9 @@ function App() {
           <option value="lb">lb</option>
           <option value="kg" selected="">kg</option>
         </select>
-      </div>
+      </form>
       <p>
-        <Results age={ageInMonths} sex={sex} inputtedWeight={inputtedWeight} weightUnits={weightUnits}>
+        <Results age={ageInMonths} sex={sex} inputtedWeight={inputtedWeight} weightUnits={weightUnits} measurementDate={measurementDate}>
         
         </Results>
       </p>
