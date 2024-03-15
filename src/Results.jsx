@@ -94,7 +94,7 @@ function Results(props) {
 
     return (
         <>
-            <table>
+            <table className="rounded-corners">
                 <thead>
                 <tr>
                     {diaperTableHeadings}

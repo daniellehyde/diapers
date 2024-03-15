@@ -128,7 +128,8 @@ table {
   background: white;
   border: 1px solid grey;
   font-size: 12pt;
-  border-collapse: collapse;
+  border-spacing: 0;
+  border-radius: 8px;
 }
 table thead th,
 table tfoot th {
@@ -139,35 +140,45 @@ table tfoot th {
 table caption {
   padding:.5em;
 }
-table th,
+table th {
+  padding: .5em;
+  border: 1px solid lightgrey;
+}
+
 table td {
   padding: .5em;
   border: 1px solid lightgrey;
 }
-/* Zebra Table Style */
-[data-table-theme*=zebra] tbody tr:nth-of-type(odd) {
-  background: rgba(0,0,0,.05);
-}
-[data-table-theme*=zebra][data-table-theme*=dark] tbody tr:nth-of-type(odd) {
-  background: rgba(255,255,255,.05);
-}
-/* Dark Style */
-[data-table-theme*=dark] {
-  color: #ddd;
-  background: #333;
-  font-size: 12pt;
-  border-collapse: collapse;
-}
-[data-table-theme*=dark] thead th,
-[data-table-theme*=dark] tfoot th {
-  color: #aaa;
-  background: rgba(0255,255,255,.15);
-}
-[data-table-theme*=dark] caption {
-  padding:.5em;
-}
-[data-table-theme*=dark] th,
-[data-table-theme*=dark] td {
-  padding: .5em;
-  border: 1px solid grey;
-}
+
+table.rounded-corners {
+  /* Change these properties */
+  --border: 1px solid lightgrey;
+  border-radius: 10px;
+ 
+  /* Don't change these properties */
+  border-spacing: 0;
+  border-collapse: separate;
+  border: var(--border);
+  overflow: hidden;
+ }
+ 
+ /* Apply a border to the right of all but the last column */
+ table.rounded-corners th:not(:last-child),
+ table.rounded-corners td:not(:last-child) {
+  border-right: var(--border);
+ }
+ 
+ /* Apply a border to the bottom of all but the last row */
+ table.rounded-corners>thead>tr:not(:last-child)>th,
+ table.rounded-corners>thead>tr:not(:last-child)>td,
+ table.rounded-corners>tbody>tr:not(:last-child)>th,
+ table.rounded-corners>tbody>tr:not(:last-child)>td,
+ table.rounded-corners>tfoot>tr:not(:last-child)>th,
+ table.rounded-corners>tfoot>tr:not(:last-child)>td,
+ table.rounded-corners>tr:not(:last-child)>td,
+ table.rounded-corners>tr:not(:last-child)>th,
+ table.rounded-corners>thead:not(:last-child),
+ table.rounded-corners>tbody:not(:last-child),
+ table.rounded-corners>tfoot:not(:last-child) {
+  border-bottom: var(--border);
+ }
