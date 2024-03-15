@@ -2,6 +2,8 @@ import { percentileCalc, weightCalc } from './growthCalc.js'
 import diaperSizesKg from './diaperSizesKg.json'
 import diaperSizesLb from './diaperSizesLb.json'
 
+const ALL_BRANDS = ["Pampers", "Huggies", "Hello Bello", "Millie Moon", "Kirkland", "Rascal and Friends"]
+
 function findSize(weight, weightUnits) {
     const sizesThatFit = [];
     if (weightUnits === "kg") {
@@ -21,6 +23,19 @@ function findSize(weight, weightUnits) {
     return sizesThatFit;
 }
 
+function groupByBrand(sizesThatFit) {
+    const results = {};
+    sizesThatFit.forEach((diaperSize) => {
+        if (results[diaperSize.brand]) {
+            results[diaperSize.brand].push(diaperSize.size)
+        }
+        else {
+            results[diaperSize.brand] = [diaperSize.size]
+        }
+    })
+    return results;
+}
+
 
 function Results(props) {
     const { age, sex, inputtedWeight, weightUnits, measurementDate } = props
@@ -33,7 +48,7 @@ function Results(props) {
             date: new Date((monthsInFuture * 30 * 8.64e+7) + new Date(measurementDate).getTime()).toDateString(),
             ageInMonths: age + monthsInFuture,
             weight: (futureWeight).toFixed(1),
-            diaperSizes: findSize(futureWeight, weightUnits)
+            diaperSizes: groupByBrand(findSize(futureWeight, weightUnits))
         }
     }
 
@@ -42,23 +57,37 @@ function Results(props) {
     }
 
     const allTheResults = [
-            futureDiapers(0), futureDiapers(1), futureDiapers(2), futureDiapers(3), futureDiapers(4), 
-            futureDiapers(5), futureDiapers(6)
-        ]
+        futureDiapers(0), futureDiapers(1), futureDiapers(2), futureDiapers(3), futureDiapers(4),
+        futureDiapers(5), futureDiapers(6)
+    ]
+
+    const diaperTableHeadings = (['Date', 'Month', 'Weight', ...ALL_BRANDS]).map((heading) => {
+        return (
+            <th>{heading}</th>
+        )
+    })
 
     const diaperTableRows = allTheResults.map((diapersResults) => {
-        const diaperSizeList = diapersResults.diaperSizes.map((diaperSize) => {
+        const diaperSizeCells = ALL_BRANDS.map((brand) => {
+            const sizes = diapersResults.diaperSizes[brand] || [];
+            const cellContents = sizes.map(size => {
+                return (<div>{size}</div>)
+            })
+
             return (
-                <li>{diaperSize.brand} {diaperSize.size}</li>
+                <td>
+                    {cellContents}
+                </td>
             )
-        });
+        })
+
 
         return (
             <tr>
                 <td>{diapersResults.date}</td>
                 <td>{diapersResults.ageInMonths}</td>
                 <td>{diapersResults.weight}</td>
-                <td>{diaperSizeList}</td>
+                {diaperSizeCells}
             </tr>
         )
     });
@@ -66,12 +95,11 @@ function Results(props) {
     return (
         <>
             <table>
+                <thead>
                 <tr>
-                    <th>Date</th>
-                    <th>Month</th>
-                    <th>Weight</th>
-                    <th>Diapers</th>
+                    {diaperTableHeadings}
                 </tr>
+                </thead>
                 {diaperTableRows}
             </table>
         </>
